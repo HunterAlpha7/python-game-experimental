@@ -18,11 +18,11 @@ AI_TIME_LIMIT = 1
 # Initialize pygame
 pygame.init()
 
-# Screen dimensions (These depend on GRID_SIZE and CELL_SIZE)
+# Screen dimensions
 SCREEN_WIDTH = GRID_SIZE * CELL_SIZE
 SCREEN_HEIGHT = GRID_SIZE * CELL_SIZE
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Maze Runner")
+pygame.display.set_caption("The Logical Labyrinth")
 
 # Load images
 MENU_BACKGROUND = pygame.image.load('menu_background.jpg')
@@ -41,6 +41,17 @@ LOSE_BACKGROUND = pygame.transform.scale(LOSE_BACKGROUND, (SCREEN_WIDTH, SCREEN_
 
 WIN_TEXT = pygame.font.Font(None, 48).render("You Won!", True, (255, 255, 255))
 LOSE_TEXT = pygame.font.Font(None, 48).render("Game Over!", True, (255, 255, 255))
+
+# Credits text
+CREDITS_TEXT = [
+    "The Logical Labyrinth",
+    "Developed by: The Formidable Four-s",
+    "Seyam Bin H Rahman",
+    "Md Sakib Hosen",
+    "Muttakin Ali",
+    "Atik Shariar Opu",
+    "Press M to return to Main Menu"
+]
 
 # Resize images to fit the grid cell
 USER_IMAGE = pygame.transform.scale(USER_IMAGE, (CELL_SIZE, CELL_SIZE))
@@ -114,13 +125,15 @@ def main_menu():
         screen.blit(MENU_BACKGROUND, (0, 0))  # Position the background at (0, 0)
 
         # Render menu text
-        title_text = font.render("Maze Runner", True, (255, 255, 255))
+        title_text = font.render("The Logical Labyrinth", True, (255, 255, 255))
         start_text = font.render("Press SPACE to Start", True, (255, 255, 255))
         exit_text = font.render("Press ESC to Exit", True, (255, 255, 255))
+        credits_text = font.render("Press C for Credits", True, (255, 255, 255))
 
         # Display the title and buttons
         screen.blit(title_text, (SCREEN_WIDTH // 2 - title_text.get_width() // 2, SCREEN_HEIGHT // 4))
-        screen.blit(start_text, (SCREEN_WIDTH // 2 - start_text.get_width() // 2, SCREEN_HEIGHT // 2))
+        screen.blit(start_text, (SCREEN_WIDTH // 2 - start_text.get_width() // 2, SCREEN_HEIGHT // 2 - 50))
+        screen.blit(credits_text, (SCREEN_WIDTH // 2 - credits_text.get_width() // 2, SCREEN_HEIGHT // 2 + 20))
         screen.blit(exit_text, (SCREEN_WIDTH // 2 - exit_text.get_width() // 2, SCREEN_HEIGHT * 3 // 4))
 
         pygame.display.flip()
@@ -132,9 +145,33 @@ def main_menu():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     running = False  # Start the game when SPACE is pressed
+                elif event.key == pygame.K_c:
+                    credits_screen()  # Show credits screen when C is pressed
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     exit()
+
+def credits_screen():
+    running = True
+    while running:
+        screen.fill(BACKGROUND_COLOR)
+
+        # Render credits text
+        y_offset = SCREEN_HEIGHT // 4
+        for line in CREDITS_TEXT:
+            credits_line = font.render(line, True, (255, 255, 255))
+            screen.blit(credits_line, (SCREEN_WIDTH // 2 - credits_line.get_width() // 2, y_offset))
+            y_offset += 40  # Space out the lines
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_m:
+                    running = False  # Return to the main menu when M is pressed
 
 def draw_countdown(time_remaining):
     countdown_text = font.render(f"Time: {time_remaining}s", True, (255, 255, 255))
@@ -202,7 +239,7 @@ def post_game_screen(won):
                 if event.key == pygame.K_r:
                     return True  # Restart the game
                 if event.key == pygame.K_m:
-                    return False  # Go back to main menu
+                    return False  # Go back to the main menu
 
 def main():
     grid = generate_grid()
@@ -224,10 +261,8 @@ def main():
 
     running = True
     while running:
-        # User's turn
         user = user_turn(user, grid, ai, goal)
 
-        # Check for win/loss conditions
         if user == goal:
             print("You reached the goal! You win.")
             if post_game_screen(True):
@@ -243,10 +278,8 @@ def main():
                 main_menu()  # Go back to the main menu
                 return
 
-        # AI's turn
         ai = ai_turn(ai, user, grid)
 
-        # Check for win/loss conditions
         if ai == goal:
             print("AI reached the goal! AI wins.")
             if post_game_screen(False):
