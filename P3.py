@@ -187,35 +187,27 @@ def user_turn(user, grid, ai, goal):
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w] or keys[pygame.K_UP]:
-            new_pos = (user[0], user[1]-1)
+            new_pos = (user[0], user[1] - 1)
             if is_valid_move(new_pos, grid):
                 return new_pos
         if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-            new_pos = (user[0], user[1]+1)
-            if is_valid_move(new_pos, grid):
-                return new_pos
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            new_pos = (user[0]+1, user[1])
+            new_pos = (user[0], user[1] + 1)
             if is_valid_move(new_pos, grid):
                 return new_pos
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            new_pos = (user[0]-1, user[1])
+            new_pos = (user[0] - 1, user[1])
             if is_valid_move(new_pos, grid):
                 return new_pos
-        if keys[pygame.K_e]:
-            new_pos = (user[0]+1, user[1] - 1)
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+            new_pos = (user[0] + 1, user[1])
             if is_valid_move(new_pos, grid):
                 return new_pos
         if keys[pygame.K_q]:
             new_pos = (user[0]-1, user[1] - 1)
             if is_valid_move(new_pos, grid):
                 return new_pos
-        if keys[pygame.K_c]:
-            new_pos = (user[0]+1, user[1]+1)
-            if is_valid_move(new_pos, grid):
-                return new_pos
-        if keys[pygame.K_z]:
-            new_pos = (user[0]-1, user[1] + 1)
+        if keys[pygame.K_e]:
+            new_pos = (user[0]+1, user[1] - 1)
             if is_valid_move(new_pos, grid):
                 return new_pos
 
@@ -262,17 +254,17 @@ def main():
 
     while True:
         goal = (random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1))
-        if grid[goal[0]][goal[1]] == 0:
+        if grid[goal[1]][goal[0]] == 0:
             break
 
     while True:
         user = (random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1))
-        if grid[user[0]][user[1]] == 0 and user != goal:
+        if grid[user[1]][user[0]] == 0 and user != goal:
             break
 
     while True:
         ai = (random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1))
-        if grid[ai[0]][ai[1]] == 0 and ai != goal and ai != user:
+        if grid[ai[1]][ai[0]] == 0 and ai != goal and ai != user:
             break
 
     running = True
